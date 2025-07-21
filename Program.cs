@@ -14,6 +14,7 @@
             GetUserInput getUserInput = new();
             dataBaseManager.CreateTable(connectionString);
 
+            getUserInput.MainMenu();
         }
     }
 }

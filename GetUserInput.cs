@@ -1,7 +1,11 @@
-﻿namespace CodingTracker
+﻿using System.Globalization;
+
+namespace CodingTracker
 {
     internal class GetUserInput
     {
+
+        Codingcontroller codingController = new();
 
         internal void MainMenu()
         {
@@ -19,28 +23,89 @@
 
                 String? userCommand = Console.ReadLine();
 
-                while (string.IsNullOrEmpty(userCommand)) 
+                while (string.IsNullOrEmpty(userCommand))
                 {
                     Console.WriteLine("Invalid, please enter a number from 0-4");
                     userCommand = Console.ReadLine();
                 }
 
-                switch(userCommand)
+                switch (userCommand)
                 {
                     case "0":
 
                         closeApp = true;
                         break;
                     case "1":
-
+                        Codingcontroller.Get();
                         break;
-
                     case "2":
-
+                        ProcessAdd();
+                        break;
+                    default:
+                        Console.WriteLine("Invalid, please enter a number from 0-4");
                         break;
 
                 }
             }
+        }
+
+        private void ProcessAdd()
+        {
+            var date = GetDateInput();
+
+            var duration = GetTimeInput();
+
+            Coding coding = new();
+
+            coding.Date = date;
+            coding.Duration = duration;
+
+            Codingcontroller.Post(coding);
+
+        }
+
+        internal string GetDateInput()
+        {
+            Console.WriteLine("Please insert the date: (Format: dd-mm-yy). Type 0 to return to main menu.");
+
+            string dateInput = Console.ReadLine();
+
+            if (dateInput == "0")
+            {
+                MainMenu();
+            } else if (dateInput == "now")
+            {
+                dateInput = DateTime.Now.ToString("dd-MM-yy");
+            }
+
+            while (!DateTime.TryParseExact(dateInput, "dd-MM-yy", new CultureInfo("en-US"), DateTimeStyles.None, out _))
+            {
+                Console.WriteLine("Invalid input. Please insert the date: (Format: dd-mm-yy). Type 0 to return to main menu.");
+                dateInput = Console.ReadLine();    
+            }
+
+            return dateInput;
+
+        }
+
+        internal string GetTimeInput()
+        {
+            Console.WriteLine("Please insert the time: (Format: h:mm). Type 0 to return to main menu.");
+
+            string timeInput = Console.ReadLine();
+
+            if (timeInput == "0")
+            {
+                MainMenu();
+            }
+
+            while (!TimeSpan.TryParseExact(timeInput, "h\\:mm", CultureInfo.InvariantCulture, out _))
+            {
+                Console.WriteLine("Invalid input. Please insert the time: (Format: h:mm). Type 0 to return to main menu.");
+                timeInput = Console.ReadLine();
+            }
+
+            return timeInput;
         }
 
     }
