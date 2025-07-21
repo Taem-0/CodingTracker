@@ -41,6 +41,9 @@ namespace CodingTracker
                     case "2":
                         ProcessAdd();
                         break;
+                    case "4":
+                        ProcessDelete();
+                        break;
                     default:
                         Console.WriteLine("Invalid, please enter a number from 0-4");
                         break;
@@ -61,6 +64,38 @@ namespace CodingTracker
             coding.Duration = duration;
 
             Codingcontroller.Post(coding);
+
+        }
+
+        private void ProcessDelete()
+        {
+            Codingcontroller.Get();
+
+            Console.WriteLine("Please insert the id of the category you want to delete. Type 0 to return to main menu.");
+
+            string commandInput = Console.ReadLine();
+
+            while (!Int32.TryParse(commandInput, out _) || string.IsNullOrEmpty(commandInput) || Int32.Parse(commandInput) < 0) 
+            {
+                Console.WriteLine("Invalid input. Please insert the id of the category you want to delete. Type 0 to return to main menu.");
+                commandInput = Console.ReadLine();
+            }
+
+            var id = Int32.Parse(commandInput);
+
+            if (id == 0) MainMenu();
+
+            var coding = codingController.GetId(id);
+
+            while (coding.Id == 0)
+            {
+                Console.WriteLine($"Record with {id} does not exist");
+                Console.WriteLine("Please insert the id of the category you want to delete. Type 0 to return to main menu.");
+                ProcessDelete();
+            }
+
+            Codingcontroller.Delete(id);
+
 
         }
 
