@@ -41,6 +41,9 @@ namespace CodingTracker
                     case "2":
                         ProcessAdd();
                         break;
+                    case "3":
+                        ProcessUpdate();
+                        break;
                     case "4":
                         ProcessDelete();
                         break;
@@ -83,7 +86,7 @@ namespace CodingTracker
 
             var id = Int32.Parse(commandInput);
 
-            if (id == 0) MainMenu();
+            if (id == 0) return;
 
             var coding = codingController.GetId(id);
 
@@ -96,6 +99,65 @@ namespace CodingTracker
 
             Codingcontroller.Delete(id);
 
+        }
+
+        private void ProcessUpdate()
+        {
+            Codingcontroller.Get();
+
+            Console.WriteLine("Please insert the id of the category you want to update. Type 0 to return to main menu.");
+
+            string commandInput = Console.ReadLine();
+
+            while (!Int32.TryParse(commandInput, out _) || string.IsNullOrEmpty(commandInput) || Int32.Parse(commandInput) < 0)
+            {
+                Console.WriteLine("Invalid input. Please insert the id of the category you want to delete. Type 0 to return to main menu.");
+                commandInput = Console.ReadLine();
+            }
+
+            var id = Int32.Parse(commandInput);
+
+            if (id == 0) return;
+
+            var coding = codingController.GetId(id);
+
+            while (coding.Id == 0)
+            {
+                Console.WriteLine($"Record with {id} does not exist");
+                Console.WriteLine("Please insert the id of the category you want to delete. Type 0 to return to main menu.");
+                ProcessUpdate();
+            }
+
+            bool recordUpdating = true;
+
+            while (recordUpdating == true)
+            {
+                Console.WriteLine("enter 'd' to update the date.");
+                Console.WriteLine("enter 't' to update the duration");
+                Console.WriteLine("enter 0 to return to main menu");
+
+                string updateCommandInput = Console.ReadLine();
+
+                switch (updateCommandInput)
+                {
+                    case "d":
+                        coding.Date = GetDateInput();
+                        break;
+                    case "t":
+                        coding.Duration = GetTimeInput(); 
+                        break;
+                    case "s":
+                        recordUpdating = false;
+                        break;
+                    case "0":
+                        return;
+                    default:
+                        Console.WriteLine("enter 0 to return to main menu");
+                        break;
+                }
+            }
+
+            Codingcontroller.Update(coding);
 
         }
 
@@ -107,7 +169,7 @@ namespace CodingTracker
 
             if (dateInput == "0")
             {
-                MainMenu();
+                return null;
             } else if (dateInput == "now")
             {
                 dateInput = DateTime.Now.ToString("dd-MM-yy");
@@ -131,7 +193,7 @@ namespace CodingTracker
 
             if (timeInput == "0")
             {
-                MainMenu();
+                return null;
             }
 
             while (!TimeSpan.TryParseExact(timeInput, "h\\:mm", CultureInfo.InvariantCulture, out _))

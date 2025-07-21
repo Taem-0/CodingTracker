@@ -118,5 +118,28 @@ namespace CodingTracker
                 }
             }
         }
+
+        internal static void Update(Coding coding)
+        {
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                using (var tableCmd = connection.CreateCommand())
+                {
+                    connection.Open();
+
+                    tableCmd.CommandText =
+                        @"UPDATE coding 
+                        SET Date = @date, Duration = @duration 
+                        WHERE Id = @id";
+
+                    tableCmd.Parameters.AddWithValue("@date", coding.Date);
+                    tableCmd.Parameters.AddWithValue("@duration", coding.Duration);
+                    tableCmd.Parameters.AddWithValue("@id", coding.Id);
+
+                    tableCmd.ExecuteNonQuery();
+                }
+            }
+
+        }
     }
 }

@@ -8,13 +8,13 @@
 
         static void Main(string[] args)
         {
-            
-
+ 
             DataBaseManager dataBaseManager = new();
             GetUserInput getUserInput = new();
             dataBaseManager.CreateTable(connectionString);
 
             getUserInput.MainMenu();
+
         }
     }
 }
