@@ -18,8 +18,9 @@ namespace CodingTracker
                 Console.WriteLine("\t-Type 0 to close the app");
                 Console.WriteLine("\t-Type 1 to view records");
                 Console.WriteLine("\t-Type 2 to add a record");
-                Console.WriteLine("\t-Type 3 to update a record");
-                Console.WriteLine("\t-Type 4 to delete a record");
+                Console.WriteLine("\t-Type 3 to track your coding live");
+                Console.WriteLine("\t-Type 4 to update a record");
+                Console.WriteLine("\t-Type 5 to delete a record");
 
                 String? userCommand = Console.ReadLine();
 
@@ -42,9 +43,12 @@ namespace CodingTracker
                         ProcessAdd();
                         break;
                     case "3":
-                        ProcessUpdate();
+                        Helpers.LiveTimeRecord();
                         break;
                     case "4":
+                        ProcessUpdate();
+                        break;
+                    case "5":
                         ProcessDelete();
                         break;
                     default:
@@ -70,7 +74,7 @@ namespace CodingTracker
             coding.Date = date;
             coding.StartTime = startTime;
             coding.EndTime = endTime;
-            coding.Duration = CalculateDuration(startTime, endTime);
+            coding.Duration = Helpers.CalculateDuration(startTime, endTime);
 
             Codingcontroller.Post(coding);
 
@@ -154,12 +158,12 @@ namespace CodingTracker
                     case "s":
                         string updateStart = GetTimeInput();
                         coding.StartTime = updateStart;
-                        coding.Duration = CalculateDuration(coding.StartTime, coding.EndTime);
+                        coding.Duration = Helpers.CalculateDuration(coding.StartTime, coding.EndTime);
                         break;
                     case "l":
                         string updateEnd = GetTimeInput();
                         coding.EndTime = updateEnd;
-                        coding.Duration = CalculateDuration(coding.StartTime, coding.EndTime);    
+                        coding.Duration = Helpers.CalculateDuration(coding.StartTime, coding.EndTime);    
                         break;
                     case "b":
                         recordUpdating = false;
@@ -220,17 +224,7 @@ namespace CodingTracker
             return timeInput;
         }
 
-        internal string CalculateDuration(string start, string end)
-        {
-
-            TimeSpan startTime = TimeSpan.ParseExact(start, "h\\:mm", CultureInfo.InvariantCulture);
-            TimeSpan endTime = TimeSpan.ParseExact(end, "h\\:mm", CultureInfo.InvariantCulture);
-
-            TimeSpan duration = endTime - startTime;
-
-            return duration.ToString(@"h\:mm");
-
-        }
+        
 
     }
 }
