@@ -1,5 +1,5 @@
 ﻿using Spectre.Console;
-
+using Spectre.Console.Cli;
 namespace CodingTracker
 {
     internal class TableVIsualisation
@@ -7,7 +7,12 @@ namespace CodingTracker
 
         internal static void showTable (List<Coding> data)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+
             var table = new Table();
+            table.Border = TableBorder.Rounded;
+            table.BorderStyle = new Style(foreground: Color.Yellow);
 
             table.AddColumn("Id");
             table.AddColumn("Date");
@@ -20,7 +25,11 @@ namespace CodingTracker
                 table.AddRow(entry.Id.ToString(), entry.Date, entry.StartTime, entry.EndTime, entry.Duration);
             }
 
+            table.ShowRowSeparators();
+            
+
             AnsiConsole.Write(table);
+            
 
         }
 
