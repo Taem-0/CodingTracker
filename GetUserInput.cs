@@ -59,12 +59,18 @@ namespace CodingTracker
         {
             var date = GetDateInput();
 
-            var duration = GetTimeInput();
+            var startTime = GetTimeInput();
+
+            var endTime = GetTimeInput();
+
+            
 
             Coding coding = new();
 
             coding.Date = date;
-            coding.Duration = duration;
+            coding.StartTime = startTime;
+            coding.EndTime = endTime;
+            coding.Duration = CalculateDuration(startTime, endTime);
 
             Codingcontroller.Post(coding);
 
@@ -133,7 +139,8 @@ namespace CodingTracker
             while (recordUpdating == true)
             {
                 Console.WriteLine("enter 'd' to update the date.");
-                Console.WriteLine("enter 't' to update the duration");
+                Console.WriteLine("enter 's' to update the start time");
+                Console.WriteLine("enter 'l' to update the end time");
                 Console.WriteLine("enter 0 to return to main menu");
 
                 string updateCommandInput = Console.ReadLine();
@@ -143,10 +150,17 @@ namespace CodingTracker
                     case "d":
                         coding.Date = GetDateInput();
                         break;
-                    case "t":
-                        coding.Duration = GetTimeInput(); 
-                        break;
                     case "s":
+                        string updateStart = GetTimeInput();
+                        coding.StartTime = updateStart;
+                        coding.Duration = CalculateDuration(coding.StartTime, coding.EndTime);
+                        break;
+                    case "l":
+                        string updateEnd = GetTimeInput();
+                        coding.EndTime = updateEnd;
+                        coding.Duration = CalculateDuration(coding.StartTime, coding.EndTime);    
+                        break;
+                    case "b":
                         recordUpdating = false;
                         break;
                     case "0":
@@ -203,6 +217,18 @@ namespace CodingTracker
             }
 
             return timeInput;
+        }
+
+        internal string CalculateDuration(string start, string end)
+        {
+
+            TimeSpan startTime = TimeSpan.ParseExact(start, "h\\:mm", CultureInfo.InvariantCulture);
+            TimeSpan endTime = TimeSpan.ParseExact(end, "h\\:mm", CultureInfo.InvariantCulture);
+
+            TimeSpan duration = endTime - startTime;
+
+            return duration.ToString(@"h\:mm");
+
         }
 
     }

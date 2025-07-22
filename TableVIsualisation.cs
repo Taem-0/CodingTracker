@@ -11,11 +11,13 @@ namespace CodingTracker
 
             table.AddColumn("Id");
             table.AddColumn("Date");
+            table.AddColumn("Start Time");
+            table.AddColumn ("End Time");
             table.AddColumn("Duration");
 
             foreach (var entry in data)
             {
-                table.AddRow(entry.Id.ToString(), entry.Date, entry.Duration);
+                table.AddRow(entry.Id.ToString(), entry.Date, entry.StartTime, entry.EndTime, entry.Duration);
             }
 
             AnsiConsole.Write(table);

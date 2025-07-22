@@ -18,10 +18,12 @@ namespace CodingTracker
                     connection.Open();
 
                     tableCmd.CommandText =
-                        @"INSERT INTO coding (Date, Duration)
-                            VALUES (@date, @duration)";
+                        @"INSERT INTO coding (Date, StartTime, EndTime, Duration)
+                            VALUES (@date, @start, @end, @duration)";
 
                     tableCmd.Parameters.AddWithValue("@date", coding.Date);
+                    tableCmd.Parameters.AddWithValue("@start", coding.StartTime);
+                    tableCmd.Parameters.AddWithValue("@end", coding.EndTime);
                     tableCmd.Parameters.AddWithValue("@duration", coding.Duration);
 
                     tableCmd.ExecuteNonQuery();
@@ -52,7 +54,9 @@ namespace CodingTracker
                                 {
                                     Id = reader.GetInt32(0),
                                     Date = reader.GetString(1),
-                                    Duration = reader.GetString(2),
+                                    StartTime = reader.GetString(2),
+                                    EndTime = reader.GetString(3),
+                                    Duration = reader.GetString(4),
                                 });
                             }
                             TableVIsualisation.showTable(tableData);
@@ -89,7 +93,9 @@ namespace CodingTracker
                             reader.Read();
                             coding.Id = reader.GetInt32(0);
                             coding.Date = reader.GetString(1);
-                            coding.Duration = reader.GetString(2);
+                            coding.StartTime = reader.GetString(2);
+                            coding.EndTime = reader.GetString(3);
+                            coding.Duration = reader.GetString(4);
                         }
 
                         return coding;
@@ -129,10 +135,12 @@ namespace CodingTracker
 
                     tableCmd.CommandText =
                         @"UPDATE coding 
-                        SET Date = @date, Duration = @duration 
+                        SET Date = @date, StartTime = @start, EndTime = @end, Duration = @duration
                         WHERE Id = @id";
 
                     tableCmd.Parameters.AddWithValue("@date", coding.Date);
+                    tableCmd.Parameters.AddWithValue("@start", coding.StartTime);
+                    tableCmd.Parameters.AddWithValue("@end", coding.EndTime);
                     tableCmd.Parameters.AddWithValue("@duration", coding.Duration);
                     tableCmd.Parameters.AddWithValue("@id", coding.Id);
 
