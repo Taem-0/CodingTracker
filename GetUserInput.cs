@@ -141,6 +141,7 @@ namespace CodingTracker
                 Console.WriteLine("enter 'd' to update the date.");
                 Console.WriteLine("enter 's' to update the start time");
                 Console.WriteLine("enter 'l' to update the end time");
+                Console.WriteLine("enter 'b' to finalize the update");
                 Console.WriteLine("enter 0 to return to main menu");
 
                 string updateCommandInput = Console.ReadLine();

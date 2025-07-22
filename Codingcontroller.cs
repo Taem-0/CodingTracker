@@ -83,7 +83,8 @@ namespace CodingTracker
                     connection.Open();
 
                     tableCmd.CommandText =
-                        @$"SELECT * FROM coding WHERE Id = '{id}'";
+                        @$"SELECT * FROM coding WHERE Id = @id";
+                    tableCmd.Parameters.AddWithValue("@id", id);
 
                     using ( var reader = tableCmd.ExecuteReader())
                     {
@@ -145,6 +146,10 @@ namespace CodingTracker
                     tableCmd.Parameters.AddWithValue("@id", coding.Id);
 
                     tableCmd.ExecuteNonQuery();
+
+                    int rowsAffected = tableCmd.ExecuteNonQuery();
+                    Console.WriteLine($"{rowsAffected} row(s) updated.");
+
                 }
             }
 
