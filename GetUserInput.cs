@@ -21,6 +21,7 @@ namespace CodingTracker
                 Console.WriteLine("\t-Type 3 to track your coding live");
                 Console.WriteLine("\t-Type 4 to update a record");
                 Console.WriteLine("\t-Type 5 to delete a record");
+                Console.WriteLine("\t-Type 6 to view stats and goals");
 
                 String? userCommand = Console.ReadLine();
 
@@ -50,6 +51,9 @@ namespace CodingTracker
                         break;
                     case "5":
                         ProcessDelete();
+                        break;
+                    case "6":
+                        Codingcontroller.GetTotalAverage();
                         break;
                     default:
                         Console.WriteLine("Invalid, please enter a number from 0-4");
@@ -142,6 +146,7 @@ namespace CodingTracker
 
             while (recordUpdating == true)
             {
+
                 Console.WriteLine("enter 'd' to update the date.");
                 Console.WriteLine("enter 's' to update the start time");
                 Console.WriteLine("enter 'l' to update the end time");
@@ -182,7 +187,7 @@ namespace CodingTracker
 
         internal string GetDateInput()
         {
-            Console.WriteLine("Please insert the date: (Format: dd-mm-yy). Type 0 to return to main menu.");
+            Console.WriteLine("Please insert the date: (Format: yyyy-MM-dd). Type 0 to return to main menu.");
 
             string dateInput = Console.ReadLine();
 
@@ -191,12 +196,12 @@ namespace CodingTracker
                 return null;
             } else if (dateInput == "now")
             {
-                dateInput = DateTime.Now.ToString("dd-MM-yy");
+                dateInput = DateTime.Now.ToString("yyyy-MM-dd");
             }
 
-            while (!DateTime.TryParseExact(dateInput, "dd-MM-yy", new CultureInfo("en-US"), DateTimeStyles.None, out _))
+            while (!DateTime.TryParseExact(dateInput, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out _))
             {
-                Console.WriteLine("Invalid input. Please insert the date: (Format: dd-mm-yy). Type 0 to return to main menu.");
+                Console.WriteLine("Invalid input. Please insert the date: (Format: yyyy-MM-dd). Type 0 to return to main menu.");
                 dateInput = Console.ReadLine();    
             }
 

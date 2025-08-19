@@ -58,5 +58,59 @@ namespace CodingTracker
 
         }
 
+        internal static (string period, string date) FilterDate()
+        {
+
+            Console.WriteLine("Filter by period:");
+            Console.WriteLine("1. Day");
+            Console.WriteLine("2. Week");
+            Console.WriteLine("3. Year");
+            Console.WriteLine("0. Back");
+            
+            string? periodInput = Console.ReadLine();
+
+            string? dateInput = "";
+
+            switch(periodInput)
+            {
+                case "1":
+                    Console.WriteLine("Please insert the date: (Format: yyyy-MM-dd).");
+                    dateInput = Console.ReadLine();
+                    while (!DateTime.TryParseExact(dateInput, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out _))
+                    {
+                        Console.WriteLine("Invalid input. Please insert the date: (Format: yyyy-MM-dd).");
+                        dateInput = Console.ReadLine();
+                    }
+
+                    
+                    break;
+                case "2":
+                    Console.WriteLine("Please insert the date: (Format: yyyy-MM-dd).");
+                    dateInput = Console.ReadLine();
+                    while (!DateTime.TryParseExact(dateInput, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out _))
+                    {
+                        Console.WriteLine("Invalid input. Please insert the date: (Format: yyyy-MM-dd).");
+                        dateInput = Console.ReadLine();
+                    }
+                    break; 
+                
+                case "3":
+                    Console.WriteLine("Please insert the year: (yyyy).");
+                    dateInput = Console.ReadLine();
+                    while (!DateTime.TryParseExact(dateInput, "yyyy", new CultureInfo("en-US"), DateTimeStyles.None, out _))
+                    {
+                        Console.WriteLine("Invalid input. Please insert the date: (Format: yyyy).");
+                        dateInput = Console.ReadLine();
+                    }
+
+                    break;
+            }
+
+            (string? Period, string? Input) userInput = (periodInput, dateInput);
+
+            return userInput;
+
+        }
+
     }
 }

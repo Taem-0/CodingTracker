@@ -1,6 +1,8 @@
 ﻿
+using System.Globalization;
 using System.Text;
 using Microsoft.Data.Sqlite;
+using SQLitePCL;
 
 namespace CodingTracker
 {
@@ -33,6 +35,7 @@ namespace CodingTracker
 
         internal static void Get()
         {
+
             List<Coding> tableData = new List<Coding>();
 
             using (var connection = new SqliteConnection(connectionString))
@@ -60,14 +63,108 @@ namespace CodingTracker
                                 });
                             }
                             TableVIsualisation.showTable(tableData);
+                            tableData.Clear();
 
                         } else
                         {
                             Console.WriteLine("No records found.");
                         }
-                    }
+                    } 
                     
+                }
 
+                var result = Helpers.FilterDate();
+
+                string query = @"SELECT * FROM coding";
+
+                switch (result.period)
+                {
+                    case "1":
+
+                        query = query + " WHERE date = @date";
+
+                        break;
+                    case "2":
+
+                        query = query + "  WHERE strftime('%W', \"Date\") = strftime('%W', @date) " + "AND strftime('%Y', \"Date\") = strftime('%Y', @date)";
+
+                        break;
+                    case "3":
+
+                        query = query + " WHERE strftime('%Y', \"Date\") = @date";
+                            
+                        break;
+                    case "0":
+
+                        return;
+                    default:
+
+                        Console.WriteLine("Invalid input. enter a number from 0-3");
+
+                        break;
+                            
+                }
+
+                using (var tableCmd = connection.CreateCommand())
+                {
+                    connection.Open();
+
+                    tableCmd.CommandText = query;
+                    tableCmd.Parameters.AddWithValue("@date", result.date);
+                    using (var reader = tableCmd.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            while (reader.Read())
+                            {
+                                tableData.Add(new Coding
+                                {
+                                    Id = reader.GetInt32(0),
+                                    Date = reader.GetString(1),
+                                    StartTime = reader.GetString(2),
+                                    EndTime = reader.GetString(3),
+                                    Duration = reader.GetString(4),
+                                });
+                            }
+                            TableVIsualisation.showTable(tableData);
+                            tableData.Clear();
+                        } else
+                        {
+                            Console.WriteLine("No records found.");
+                        }
+                    }
+                }
+            }
+        }
+
+        internal static void GetTotalAverage()
+        {
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                using (var tableCmd = connection.CreateCommand())
+                {
+                    connection.Open();
+
+                    tableCmd.CommandText =
+                        $@"SELECT SUM(Duration) FROM coding";
+                    object sum = tableCmd.ExecuteScalar();
+
+                    
+                    int totalMinutes = Convert.ToInt32(sum);
+
+                    TimeSpan totalDuration = TimeSpan.FromMinutes(totalMinutes);
+
+                    Console.WriteLine($"Total coding duration {totalDuration:d\\.h\\:mm}");
+
+                    tableCmd.CommandText =
+                        $@"SELECT AVG(Duration) FROM coding";
+                    object average = tableCmd.ExecuteScalar();
+
+                    int averageMinutes = Convert.ToInt32(average);
+
+                    TimeSpan averageDuration = TimeSpan.FromMinutes(averageMinutes);
+
+                    Console.WriteLine($"Average coding duration {averageDuration:h\\:mm}");
 
                 }
             }
@@ -144,8 +241,6 @@ namespace CodingTracker
                     tableCmd.Parameters.AddWithValue("@end", coding.EndTime);
                     tableCmd.Parameters.AddWithValue("@duration", coding.Duration);
                     tableCmd.Parameters.AddWithValue("@id", coding.Id);
-
-                    tableCmd.ExecuteNonQuery();
 
                     int rowsAffected = tableCmd.ExecuteNonQuery();
                     Console.WriteLine($"{rowsAffected} row(s) updated.");
