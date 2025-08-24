@@ -11,6 +11,8 @@ namespace CodingTracker
 
         static string connectionString = @"Data Source=coding-tracker.db";
 
+        static List<Coding> tableData = new List<Coding>();
+
         internal static void Post(Coding coding)
         {
             using (var connection = new SqliteConnection(connectionString))
@@ -33,19 +35,23 @@ namespace CodingTracker
             }
         }
 
-        internal static void Get()
+        internal static void Get(string query = @"SELECT * FROM coding", List<SqliteParameter>? parameter = null)
         {
-
-            List<Coding> tableData = new List<Coding>();
-
             using (var connection = new SqliteConnection(connectionString))
             {
                 using (var tableCmd = connection.CreateCommand())
                 {
                     connection.Open();
+                    
+                    tableCmd.CommandText = query;
 
-                    tableCmd.CommandText =
-                        @"SELECT * FROM coding";
+                    if (parameter != null)
+                    {
+                        foreach (var parameters in parameter)
+                        {
+                            tableCmd.Parameters.Add(parameters);
+                        }
+                    }
 
                     using (var reader = tableCmd.ExecuteReader())
                     {
@@ -70,71 +76,85 @@ namespace CodingTracker
                             Console.WriteLine("No records found.");
                         }
                     } 
-                    
                 }
+            }
+        }
+
+        internal static (string, List<SqliteParameter>) SortByPeriod()
+        {
+            using (var connection = new SqliteConnection(connectionString))
+            {
 
                 var result = Helpers.FilterDate();
 
                 string query = @"SELECT * FROM coding";
+
+                var parameter = new List<SqliteParameter>();
 
                 switch (result.period)
                 {
                     case "1":
 
                         query = query + " WHERE date = @date";
-
+                        parameter.Add(new SqliteParameter("@date", result.date));
                         break;
                     case "2":
 
                         query = query + "  WHERE strftime('%W', \"Date\") = strftime('%W', @date) " + "AND strftime('%Y', \"Date\") = strftime('%Y', @date)";
-
+                        parameter.Add(new SqliteParameter("@date", result.date));
                         break;
                     case "3":
 
                         query = query + " WHERE strftime('%Y', \"Date\") = @date";
-                            
+                        parameter.Add(new SqliteParameter("@date", result.date));
                         break;
                     case "0":
 
-                        return;
+                        break;
                     default:
 
                         Console.WriteLine("Invalid input. enter a number from 0-3");
 
                         break;
-                            
                 }
 
-                using (var tableCmd = connection.CreateCommand())
-                {
-                    connection.Open();
+                return (query, parameter);
 
-                    tableCmd.CommandText = query;
-                    tableCmd.Parameters.AddWithValue("@date", result.date);
-                    using (var reader = tableCmd.ExecuteReader())
-                    {
-                        if (reader.HasRows)
-                        {
-                            while (reader.Read())
-                            {
-                                tableData.Add(new Coding
-                                {
-                                    Id = reader.GetInt32(0),
-                                    Date = reader.GetString(1),
-                                    StartTime = reader.GetString(2),
-                                    EndTime = reader.GetString(3),
-                                    Duration = reader.GetString(4),
-                                });
-                            }
-                            TableVIsualisation.showTable(tableData);
-                            tableData.Clear();
-                        } else
-                        {
-                            Console.WriteLine("No records found.");
-                        }
-                    }
-                }
             }
+        }
+
+        internal static (string query, List<SqliteParameter> parameters) SortByOrder()
+        {
+            string result = Helpers.FilterOrder();
+
+            string query = @"SELECT * FROM coding";
+
+            switch (result)
+            {
+                case "1":
+
+                    query = query + " ORDER BY StartTime ASC";
+                    break;
+                case "2":
+                    query = query + " ORDER BY StartTime DESC";
+                    break;
+                case "3":
+                    query = query + " ORDER BY Duration ASC";
+                    break;
+                case "4":
+                    query = query + " ORDER BY Duration DESC";
+                    break;
+                case "0":
+                    query = "";
+                    break;
+                default:
+                    Console.WriteLine("Invalid choice.");
+                    query = "";
+                    break;
+
+            }
+
+            return (query, new List<SqliteParameter>());
         }
 
         internal static void GetTotalAverage()
@@ -154,7 +174,7 @@ namespace CodingTracker
 
                     TimeSpan totalDuration = TimeSpan.FromMinutes(totalMinutes);
 
-                    Console.WriteLine($"Total coding duration {totalDuration:d\\.h\\:mm}");
+                    Console.WriteLine($"Total coding duration: {totalDuration:d\\.h\\:mm}");
 
                     tableCmd.CommandText =
                         $@"SELECT AVG(Duration) FROM coding";
@@ -164,7 +184,7 @@ namespace CodingTracker
 
                     TimeSpan averageDuration = TimeSpan.FromMinutes(averageMinutes);
 
-                    Console.WriteLine($"Average coding duration {averageDuration:h\\:mm}");
+                    Console.WriteLine($"Average coding duration: {averageDuration:h\\:mm}");
 
                 }
             }

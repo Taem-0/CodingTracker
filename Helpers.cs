@@ -112,5 +112,19 @@ namespace CodingTracker
 
         }
 
+        internal static string FilterOrder()
+        {
+            Console.WriteLine("Filter by order:");
+            Console.WriteLine("1. Start time ascending");
+            Console.WriteLine("2. Start time descending");
+            Console.WriteLine("3. Duration ascending");
+            Console.WriteLine("4. Duration descending");
+            Console.WriteLine("0. Back");
+
+            string? orderInput = Console.ReadLine();
+
+            return orderInput;
+        }
+
     }
 }

@@ -23,13 +23,7 @@ namespace CodingTracker
                 Console.WriteLine("\t-Type 5 to delete a record");
                 Console.WriteLine("\t-Type 6 to view stats and goals");
 
-                String? userCommand = Console.ReadLine();
-
-                while (string.IsNullOrEmpty(userCommand))
-                {
-                    Console.WriteLine("Invalid, please enter a number from 0-4");
-                    userCommand = Console.ReadLine();
-                }
+                String? userCommand = Console.ReadLine(); 
 
                 switch (userCommand)
                 {
@@ -38,7 +32,7 @@ namespace CodingTracker
                         closeApp = true;
                         break;
                     case "1":
-                        Codingcontroller.Get();
+                        ProcessGet();
                         break;
                     case "2":
                         ProcessAdd();
@@ -61,6 +55,48 @@ namespace CodingTracker
 
                 }
             }
+        }
+
+        private void ProcessGet()
+        {
+            Codingcontroller.Get();
+
+            bool closeApp = false;
+
+
+
+            while (closeApp == false)
+            {
+
+                Console.WriteLine("\nSort by:");
+                Console.WriteLine("\t-Type 0 to back");
+                Console.WriteLine("\t-Type 1 to sort by period");
+                Console.WriteLine("\t-Type 2 to sort by order");
+
+                string? userCommand = Console.ReadLine();
+
+                switch (userCommand)
+                {
+                    case "0":
+
+                        closeApp= true; 
+                        break;
+
+                    case "1":
+
+                        var (query, parameter) = Codingcontroller.SortByPeriod();
+                        Codingcontroller.Get(query, parameter);
+                        break;
+
+                     case "2":
+
+                        (query, parameter) = Codingcontroller.SortByOrder();
+                        Codingcontroller.Get(query, parameter);
+                        
+                        break;
+                }
+            }
+
         }
 
         private void ProcessAdd()

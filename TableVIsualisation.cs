@@ -11,9 +11,9 @@ namespace CodingTracker
 
 
             var table = new Table();
-            table.Border = TableBorder.Rounded;
-            table.BorderStyle = new Style(foreground: Color.Yellow);
-
+            table.Border = TableBorder.Minimal;
+            table.BorderStyle = new Style(foreground: Color.Silver);
+            table.Expand();
             table.AddColumn("Id");
             table.AddColumn("Date");
             table.AddColumn("Start Time");
@@ -35,4 +35,4 @@ namespace CodingTracker
 
 
     }
-}
+}   
