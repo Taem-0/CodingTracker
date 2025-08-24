@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using Microsoft.Data.Sqlite;
 
 namespace CodingTracker
 {
@@ -63,15 +64,16 @@ namespace CodingTracker
 
             bool closeApp = false;
 
-
+            var (periodQuery, orderQuery, parameter) = ("", "", new List<SqliteParameter>());
 
             while (closeApp == false)
             {
 
                 Console.WriteLine("\nSort by:");
                 Console.WriteLine("\t-Type 0 to back");
-                Console.WriteLine("\t-Type 1 to sort by period");
-                Console.WriteLine("\t-Type 2 to sort by order");
+                Console.WriteLine("\t-Type 1 to show table");
+                Console.WriteLine("\t-Type 2 to sort by period");
+                Console.WriteLine("\t-Type 3 to sort by order");
 
                 string? userCommand = Console.ReadLine();
 
@@ -84,14 +86,19 @@ namespace CodingTracker
 
                     case "1":
 
-                        var (query, parameter) = Codingcontroller.SortByPeriod();
-                        Codingcontroller.Get(query, parameter);
+                        Codingcontroller.Get();
                         break;
 
-                     case "2":
+                    case "2":
 
-                        (query, parameter) = Codingcontroller.SortByOrder();
-                        Codingcontroller.Get(query, parameter);
+                        (periodQuery, parameter) = Codingcontroller.SortByPeriod();
+                        Codingcontroller.Get(periodQuery, orderQuery, parameter);
+                        break;
+
+                     case "3":
+
+                        (orderQuery) = Codingcontroller.SortByOrder();
+                        Codingcontroller.Get(periodQuery, orderQuery, parameter);
                         
                         break;
                 }

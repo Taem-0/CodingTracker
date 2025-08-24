@@ -35,15 +35,17 @@ namespace CodingTracker
             }
         }
 
-        internal static void Get(string query = @"SELECT * FROM coding", List<SqliteParameter>? parameter = null)
+        internal static void Get(string periodQuery = "", string orderQuery = "", List<SqliteParameter>? parameter = null)
         {
             using (var connection = new SqliteConnection(connectionString))
             {
                 using (var tableCmd = connection.CreateCommand())
                 {
                     connection.Open();
-                    
-                    tableCmd.CommandText = query;
+
+                    string mainQuery = @"SELECT * FROM coding";
+
+                    tableCmd.CommandText = mainQuery += periodQuery + orderQuery;
 
                     if (parameter != null)
                     {
@@ -87,7 +89,7 @@ namespace CodingTracker
 
                 var result = Helpers.FilterDate();
 
-                string query = @"SELECT * FROM coding";
+                string query = "";
 
                 var parameter = new List<SqliteParameter>();
 
@@ -123,11 +125,11 @@ namespace CodingTracker
             }
         }
 
-        internal static (string query, List<SqliteParameter> parameters) SortByOrder()
+        internal static string SortByOrder()
         {
             string result = Helpers.FilterOrder();
 
-            string query = @"SELECT * FROM coding";
+            string query = "";
 
             switch (result)
             {
@@ -154,7 +156,7 @@ namespace CodingTracker
 
             }
 
-            return (query, new List<SqliteParameter>());
+            return (query);
         }
 
         internal static void GetTotalAverage()
