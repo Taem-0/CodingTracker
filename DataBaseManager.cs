@@ -22,6 +22,14 @@ namespace CodingTracker
                             )";
 
                     tableCmd.ExecuteNonQuery();
+
+                    tableCmd.CommandText =
+                        @"CREATE TABLE IF NOT EXISTS goals (
+                            Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            GoalHours TEXT,
+                            Deadline TEXT)";
+
+                    tableCmd.ExecuteNonQuery();
                 }
             }
         }

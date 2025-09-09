@@ -6,6 +6,53 @@ namespace CodingTracker
     internal class Helpers
     {
 
+
+        internal static string GetDateInput()
+        {
+            Console.WriteLine("Please insert the date: (Format: yyyy-MM-dd). Type 0 to return to main menu.");
+
+            string? dateInput = Console.ReadLine();
+
+            if (dateInput == "0")
+            {
+                return null;
+            }
+            else if (dateInput == "now")
+            {
+                dateInput = DateTime.Now.ToString("yyyy-MM-dd");
+            }
+
+            while (!DateTime.TryParseExact(dateInput, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out _))
+            {
+                Console.WriteLine("Invalid input. Please insert the date: (Format: yyyy-MM-dd). Type 0 to return to main menu.");
+                dateInput = Console.ReadLine();
+            }
+
+            return dateInput;
+
+        }
+
+        internal static string GetTimeInput()
+        {
+            Console.WriteLine("Please insert the time: (Format: h:mm). Type 0 to return to main menu.");
+
+            string? timeInput = Console.ReadLine();
+
+            if (timeInput == "0")
+            {
+                return null;
+            }
+
+            while (!TimeSpan.TryParseExact(timeInput, "h\\:mm", CultureInfo.InvariantCulture, out _))
+            {
+                Console.WriteLine("Invalid input. Please insert the time: (Format: h:mm). Type 0 to return to main menu.");
+                timeInput = Console.ReadLine();
+            }
+
+            return timeInput;
+        }
+
+
         internal static string CalculateDuration(string start, string end)
         {
 
@@ -23,7 +70,7 @@ namespace CodingTracker
 
             GetUserInput getUserInput = new GetUserInput();
 
-            var date = getUserInput.GetDateInput();
+            var date = GetDateInput();
 
             Console.WriteLine("Press any key to start...");
             Console.ReadLine();

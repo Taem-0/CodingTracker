@@ -33,6 +33,29 @@ namespace CodingTracker
 
         }
 
+        internal static void showGoals (List<Goal> goals)
+        {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+            var goalsTable = new Table();
+            goalsTable.Border = TableBorder.Minimal;
+            goalsTable.BorderStyle = new Style(foreground: Color.Yellow);
+            goalsTable.Expand();
+            goalsTable.AddColumn("Id");
+            goalsTable.AddColumn("Goal");
+            goalsTable.AddColumn("Deadline");
+
+            foreach (var entry in goals)
+            {
+                goalsTable.AddRow(entry.Id.ToString(), entry.GoalHours, entry.Deadline);
+            }
+
+            goalsTable.ShowRowSeparators();
+
+            AnsiConsole.Write(goalsTable);
+
+        }
+
 
     }
 }   

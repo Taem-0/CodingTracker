@@ -6,6 +6,8 @@ namespace CodingTracker
     internal class GetUserInput
     {
 
+        Status_GoalMenu goalMenu = new();   
+
         Codingcontroller codingController = new();
 
         internal void MainMenu()
@@ -48,7 +50,7 @@ namespace CodingTracker
                         ProcessDelete();
                         break;
                     case "6":
-                        Codingcontroller.GetTotalAverage();
+                        goalMenu.StatusMenu();
                         break;
                     default:
                         Console.WriteLine("Invalid, please enter a number from 0-4");
@@ -56,17 +58,17 @@ namespace CodingTracker
 
                 }
             }
-        }
+        }       
 
         private void ProcessGet()
         {
             Codingcontroller.Get();
 
-            bool closeApp = false;
+            bool closeInterface = false;
 
             var (periodQuery, orderQuery, parameter) = ("", "", new List<SqliteParameter>());
 
-            while (closeApp == false)
+            while (closeInterface == false)
             {
 
                 Console.WriteLine("\nSort by:");
@@ -81,7 +83,7 @@ namespace CodingTracker
                 {
                     case "0":
 
-                        closeApp= true; 
+                        closeInterface = true; 
                         break;
 
                     case "1":
@@ -108,13 +110,14 @@ namespace CodingTracker
 
         private void ProcessAdd()
         {
-            var date = GetDateInput();
+           
+            var date = Helpers.GetDateInput();
 
-            var startTime = GetTimeInput();
+            var startTime = Helpers.GetTimeInput();
 
-            var endTime = GetTimeInput();
+            var endTime = Helpers.GetTimeInput();
 
-            
+
 
             Coding coding = new();
 
@@ -133,7 +136,7 @@ namespace CodingTracker
 
             Console.WriteLine("Please insert the id of the category you want to delete. Type 0 to return to main menu.");
 
-            string commandInput = Console.ReadLine();
+            string? commandInput = Console.ReadLine();
 
             while (!Int32.TryParse(commandInput, out _) || string.IsNullOrEmpty(commandInput) || Int32.Parse(commandInput) < 0) 
             {
@@ -164,7 +167,7 @@ namespace CodingTracker
 
             Console.WriteLine("Please insert the id of the category you want to update. Type 0 to return to main menu.");
 
-            string commandInput = Console.ReadLine();
+            string? commandInput = Console.ReadLine();
 
             while (!Int32.TryParse(commandInput, out _) || string.IsNullOrEmpty(commandInput) || Int32.Parse(commandInput) < 0)
             {
@@ -196,20 +199,20 @@ namespace CodingTracker
                 Console.WriteLine("enter 'b' to finalize the update");
                 Console.WriteLine("enter 0 to return to main menu");
 
-                string updateCommandInput = Console.ReadLine();
+                string? updateCommandInput = Console.ReadLine();
 
                 switch (updateCommandInput)
                 {
                     case "d":
-                        coding.Date = GetDateInput();
+                        coding.Date = Helpers.GetDateInput();
                         break;
                     case "s":
-                        string updateStart = GetTimeInput();
+                        string updateStart = Helpers.GetTimeInput();
                         coding.StartTime = updateStart;
                         coding.Duration = Helpers.CalculateDuration(coding.StartTime, coding.EndTime);
                         break;
                     case "l":
-                        string updateEnd = GetTimeInput();
+                        string updateEnd = Helpers.GetTimeInput();
                         coding.EndTime = updateEnd;
                         coding.Duration = Helpers.CalculateDuration(coding.StartTime, coding.EndTime);    
                         break;
@@ -228,49 +231,11 @@ namespace CodingTracker
 
         }
 
-        internal string GetDateInput()
-        {
-            Console.WriteLine("Please insert the date: (Format: yyyy-MM-dd). Type 0 to return to main menu.");
+        
 
-            string dateInput = Console.ReadLine();
+        
 
-            if (dateInput == "0")
-            {
-                return null;
-            } else if (dateInput == "now")
-            {
-                dateInput = DateTime.Now.ToString("yyyy-MM-dd");
-            }
-
-            while (!DateTime.TryParseExact(dateInput, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out _))
-            {
-                Console.WriteLine("Invalid input. Please insert the date: (Format: yyyy-MM-dd). Type 0 to return to main menu.");
-                dateInput = Console.ReadLine();    
-            }
-
-            return dateInput;
-
-        }
-
-        internal string GetTimeInput()
-        {
-            Console.WriteLine("Please insert the time: (Format: h:mm). Type 0 to return to main menu.");
-
-            string timeInput = Console.ReadLine();
-
-            if (timeInput == "0")
-            {
-                return null;
-            }
-
-            while (!TimeSpan.TryParseExact(timeInput, "h\\:mm", CultureInfo.InvariantCulture, out _))
-            {
-                Console.WriteLine("Invalid input. Please insert the time: (Format: h:mm). Type 0 to return to main menu.");
-                timeInput = Console.ReadLine();
-            }
-
-            return timeInput;
-        }
+       
 
         
 
